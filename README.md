@@ -26,6 +26,8 @@
 
 Accepts both **native PDFs** and **high-resolution images (`.PNG`, `.JPG`, `.JPEG`, `.WEBP`)** via Gemini Vision OCR.
 
+<img src="./AI Resume Analyser.png" alt="Kusuma S - Software Engineer" width="100%">
+
 ---
 
 ## ✨ Key Features
