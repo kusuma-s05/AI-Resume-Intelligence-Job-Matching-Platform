@@ -1,0 +1,170 @@
+[project]
+name = "ai-resume-analyzer"
+version = "0.3.0"
+description = "AI-powered resume analysis API that provides structured feedback, ATS compatibility checks, and actionable improvement suggestions using Google Gemini."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [{ name = "tokumag" }]
+keywords = ["ai", "resume", "analyzer", "gemini", "fastapi", "nlp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.5.0",
+    "pymupdf>=1.24.0",
+    "google-generativeai>=0.8.0",
+    "python-multipart>=0.0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-cov>=5.0.0",
+    "pytest-asyncio>=0.24.0",
+    "httpx>=0.27.0",
+    "ruff>=0.7.0",
+    "mypy>=1.12.0",
+    "pre-commit>=4.0.0",
+]
+
+# =============================================================================
+# Build System
+# =============================================================================
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/resume_analyzer"]
+
+# =============================================================================
+# Ruff — Linting & Formatting
+# =============================================================================
+# Ruff replaces flake8 + black + isort in a single, fast tool.
+# Docs: https://docs.astral.sh/ruff/
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort (import sorting)
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking (move imports behind TYPE_CHECKING)
+    "RUF",  # ruff-specific rules
+    "S",    # flake8-bandit (security)
+    "ANN",  # flake8-annotations (type hint enforcement)
+    "D",    # pydocstyle (docstring enforcement)
+    "C4",   # flake8-comprehensions
+    "PT",   # flake8-pytest-style
+    "RET",  # flake8-return
+    "ARG",  # flake8-unused-arguments
+]
+ignore = [
+    "E501",   # Line length handled by formatter
+    "D100",   # Missing docstring in public module (too noisy for __init__.py)
+    "D104",   # Missing docstring in public package
+    "D203",   # Conflicts with D211 (no-blank-line-before-class)
+    "D213",   # Conflicts with D212 (multi-line-summary-second-line)
+    "S101",   # Use of assert (we use it in tests)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",   # Allow assert in tests
+    "ANN",    # Don't require type annotations in tests
+    "D",      # Don't require docstrings in tests
+    "ARG",    # Allow unused arguments in tests (fixtures)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["resume_analyzer"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+# =============================================================================
+# mypy — Static Type Checking
+# =============================================================================
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+namespace_packages = true
+explicit_package_bases = true
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = [
+    "fitz.*",
+    "pypdf.*",
+]
+ignore_missing_imports = true
+
+# =============================================================================
+# pytest — Testing
+# =============================================================================
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+    "--cov=resume_analyzer",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+    "--cov-fail-under=80",
+]
+markers = [
+    "unit: Unit tests (no external dependencies)",
+    "integration: Integration tests (may require services)",
+    "slow: Tests that take more than 5 seconds",
+]
+asyncio_mode = "auto"
+
+# =============================================================================
+# Coverage
+# =============================================================================
+[tool.coverage.run]
+source = ["resume_analyzer"]
+branch = true
+omit = ["*/tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.",
+    "@abstractmethod",
+]

@@ -1,0 +1,24 @@
+{
+  "name": "ai-resume-analyzer",
+  "version": "0.2.0",
+  "description": "AI-powered resume analysis, ATS scanner, and candidate comparison platform",
+  "scripts": {
+    "dev": "python -m resume_analyzer.cli serve --reload",
+    "start": "python -m resume_analyzer.cli serve",
+    "build": "python -m ruff check src/ tests/ && python -m mypy src/",
+    "lint": "python -m ruff check src/ tests/",
+    "format": "python -m ruff format src/ tests/",
+    "typecheck": "python -m mypy src/",
+    "test": "python -m pytest"
+  },
+  "keywords": [
+    "resume",
+    "ats",
+    "ai",
+    "gemini",
+    "fastapi",
+    "analyzer"
+  ],
+  "author": "",
+  "license": "MIT"
+}
